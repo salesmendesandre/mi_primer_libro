@@ -9,7 +9,7 @@ Su objetivo principal es minimizar la suma de los cuadrados de las diferencias (
 A continuación, puedes ajustar manualmente los parámetros de una regresión lineal simple (la intersección $\beta_0$ y la pendiente $\beta_1$) para intentar encontrar el modelo que mejor se ajusta a los datos, o permitir que el algoritmo de OLS calcule el valor óptimo de manera analítica.
 
 ```{raw} html
-<iframe src="../_static/ols_interactive.html" width="100%" height="800px" frameborder="0" scrolling="no"></iframe>
+<iframe src="../_static/ols_interactive.html" width="100%" height="900px" frameborder="0" scrolling="yes"></iframe>
 ```
 
 ```{raw} latex

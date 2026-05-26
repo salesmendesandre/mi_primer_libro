@@ -9,7 +9,7 @@ Its main objective is to minimize the sum of the squared differences (residuals)
 Below, you can manually adjust the parameters of a simple linear regression (the intercept $\beta_0$ and the slope $\beta_1$) to try to find the model that best fits the data, or allow the OLS algorithm to calculate the optimal value analytically.
 
 ```{raw} html
-<iframe src="../_static/ols_interactive.html" width="100%" height="800px" frameborder="0" scrolling="no"></iframe>
+<iframe src="../_static/ols_interactive.html" width="100%" height="900px" frameborder="0" scrolling="yes"></iframe>
 ```
 
 ```{raw} latex

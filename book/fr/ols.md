@@ -9,7 +9,7 @@ Son objectif principal est de minimiser la somme des carrés des différences (r
 Ci-dessous, vous pouvez ajuster manuellement les paramètres d'une régression linéaire simple (l'ordonnée à l'origine $\beta_0$ et la pente $\beta_1$) pour tenter de trouver le modèle qui s'adapte le mieux aux données, ou laisser l'algorithme des moindres carrés calculer la valeur optimale de manière analytique.
 
 ```{raw} html
-<iframe src="../_static/ols_interactive.html" width="100%" height="800px" frameborder="0" scrolling="no"></iframe>
+<iframe src="../_static/ols_interactive.html" width="100%" height="900px" frameborder="0" scrolling="yes"></iframe>
 ```
 
 ```{raw} latex
