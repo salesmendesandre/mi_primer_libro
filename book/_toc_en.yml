@@ -4,6 +4,15 @@ parts:
   - caption: Mathematics
     chapters:
     - file: en/quadratic_equations
+  - caption: Computer Science
+    chapters:
+    - file: en/week_3_exercises
+  - caption: Research
+    chapters:
+    - file: en/cervical_multiagent_system
+  - caption: References
+    chapters:
+    - file: en/93_bibliography
 # Contenido oculto temporalmente para usar esta plantilla como base mínima
 #   - caption: Tutorial
 #     chapters:

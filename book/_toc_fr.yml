@@ -1,0 +1,124 @@
+format: jb-book
+root: fr/intro
+parts:
+  - caption: Mathématiques
+    chapters:
+    - file: fr/ecuaciones_segundo_grado
+  - caption: Informatique
+    chapters:
+    - file: fr/ejercicios_semana_3
+  - caption: Recherche
+    chapters:
+    - file: fr/sistema_multiagente_cervical
+  - caption: Références
+    chapters:
+    - file: fr/93_bibliografia
+# Contenido oculto temporalmente para usar esta plantilla como base mínima
+#   - caption: Tutorial
+#     chapters:
+#     - file: fr/01_tutorial/01_que_es_un_teachbook
+#     - file: fr/01_tutorial/02_flujo_trabajo
+#     - file: fr/01_tutorial/03_edicion_con_ia
+#     - file: fr/01_tutorial/04_mi_primer_libro_en_5_minutos
+#     - file: fr/01_tutorial/05_filosofia_algo_como_codigo
+#   - caption: Ejemplos por Grado
+#     chapters:
+#     - file: fr/02_grados/grado_fisica/intro
+#       sections:
+#       - file: fr/02_grados/grado_fisica/ejemplo_fisica
+#       - file: fr/02_grados/grado_fisica/circuitos_schemdraw
+#       - file: fr/02_grados/grado_fisica/circuitikz_avanzado
+#       - file: fr/02_grados/grado_fisica/diagramas_kroki
+#       - file: fr/02_grados/grado_fisica/ley_ohm_ajuste
+#       - file: fr/02_grados/grado_fisica/oscilador_armonico
+#     - file: fr/02_grados/grado_matematicas/intro
+#       sections:
+#       - file: fr/02_grados/grado_matematicas/ejemplo_matematicas
+#       - file: fr/02_grados/grado_matematicas/ecuacion_segundo_grado
+#       - file: fr/02_grados/grado_matematicas/metodo_newton
+#       - file: fr/02_grados/grado_matematicas/transformaciones_lineales
+#       - file: fr/02_grados/grado_matematicas/distancias_unitarias
+#     - file: fr/02_grados/grado_estadistica/intro
+#       sections:
+#       - file: fr/02_grados/grado_estadistica/ejemplo_estadistica
+#       - file: fr/02_grados/grado_estadistica/regresion_lineal
+#       - file: fr/02_grados/grado_estadistica/monte_carlo_pi
+#       - file: fr/02_grados/grado_estadistica/preguntas_estadistica
+#     - file: fr/02_grados/grado_informatica/intro
+#       sections:
+#       - file: fr/02_grados/grado_informatica/diagrama_er_mermaid
+#       - file: fr/02_grados/grado_informatica/uml_clases_mermaid
+#       - file: fr/02_grados/grado_informatica/diagramas_kroki
+#       - file: fr/02_grados/grado_informatica/complejidad_algoritmica
+#     - file: fr/02_grados/grado_geologia/intro
+#       sections:
+#       - file: fr/02_grados/grado_geologia/perfil_topografico
+#       - file: fr/02_grados/grado_geologia/columna_estratigrafica
+#       - file: fr/02_grados/grado_geologia/ciclo_rocas_mermaid
+#     - file: fr/02_grados/grado_ingenieria_quimica/intro
+#       sections:
+#       - file: fr/02_grados/grado_ingenieria_quimica/diagrama_flujo
+#       - file: fr/02_grados/grado_ingenieria_quimica/mccabe_thiele
+#       - file: fr/02_grados/grado_ingenieria_quimica/recirculacion_fsolve
+#       - file: fr/02_grados/grado_ingenieria_quimica/gradiente_concentracion
+#       - file: fr/02_grados/grado_ingenieria_quimica/grafica_moody
+#     - file: fr/02_grados/grado_quimica/intro
+#       sections:
+#       - file: fr/02_grados/grado_quimica/curva_ph_tampon
+#       - file: fr/02_grados/grado_quimica/michaelis_menten
+#       - file: fr/02_grados/grado_quimica/tabla_periodica_interactiva
+#       - file: fr/02_grados/grado_quimica/espectro_ir_interactivo
+#       - file: fr/02_grados/grado_quimica/ecuacion_nernst
+#   - caption: Ejemplos transversales
+#     chapters:
+#     - file: fr/03_ejemplos_transversalfr/intro
+#       sections:
+#       - file: fr/03_ejemplos_transversalfr/biologia_crecimiento_logistico
+#       - file: fr/03_ejemplos_transversalfr/psicologia_cuestionario_likert
+#       - file: fr/03_ejemplos_transversalfr/lengua_glosario_frecuencia
+#       - file: fr/03_ejemplos_transversalfr/educacion_rubrica_secuencia
+#       - file: fr/03_ejemplos_transversalfr/medicina_datos_simulados
+#       - file: fr/03_ejemplos_transversalfr/ingenieria_quimica_balance
+#   - caption: Ejemplos de otros libros
+#     chapters:
+#     - file: fr/04_ejemplos_otros_libros/intro
+#   - caption: Contenidos Básicos
+#     chapters:
+#     - file: fr/05_contenidos_basicos/intro
+#     - file: fr/05_contenidos_basicos/myst_markdown
+#     - file: fr/05_contenidos_basicos/figuras
+#     - file: fr/05_contenidos_basicos/ecuaciones
+#     - file: fr/05_contenidos_basicos/citas_bibliografia
+#     - file: fr/05_contenidos_basicos/referencias_cruzadas
+#     - file: fr/05_contenidos_basicos/tablas
+#     - file: fr/05_contenidos_basicos/admonitions_dropdowns
+#     - file: fr/05_contenidos_basicos/tabs_cards
+#     - file: fr/05_contenidos_basicos/codigo
+#     - file: fr/05_contenidos_basicos/videos
+#     - file: fr/05_contenidos_basicos/audio
+#     - file: fr/05_contenidos_basicos/mermaid
+#     - file: fr/05_contenidos_basicos/compatibilidad_html_pdf
+#   - caption: Interactividad y Evaluación
+#     chapters:
+#     - file: fr/06_interactividad/intro
+#       sections:
+#       - file: fr/06_interactividad/thebe_pyodide
+#       - file: fr/06_interactividad/notebooks_interactivos
+#       - file: fr/06_interactividad/widgets
+#       - file: fr/06_interactividad/quizzes_jupyterquiz
+#       - file: fr/06_interactividad/preguntas_parametricas
+#       - file: fr/06_interactividad/ejercicios_con_solucion
+#       - file: fr/06_interactividad/html_interactivo
+#       - file: fr/06_interactividad/h5p_opcional
+#   - caption: Publicación Web
+#     chapters:
+#     - file: fr/07_publicacion_web/intro
+#       sections:
+#       - file: fr/07_publicacion_web/github_pages
+#       - file: fr/07_publicacion_web/servidor_propio
+#   - caption: Información
+#     chapters:
+#     - file: fr/90_acerca_de
+#     - file: fr/91_licencias
+#     - file: fr/92_como_citar
+#     - file: fr/93_bibliografia
