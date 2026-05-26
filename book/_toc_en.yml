@@ -4,6 +4,7 @@ parts:
   - caption: Mathematics
     chapters:
     - file: en/quadratic_equations
+    - file: en/ols
   - caption: Computer Science
     chapters:
     - file: en/week_3_exercises

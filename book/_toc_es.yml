@@ -4,6 +4,7 @@ parts:
   - caption: Matemáticas
     chapters:
     - file: es/ecuaciones_segundo_grado
+    - file: es/ols
   - caption: Informática
     chapters:
     - file: es/ejercicios_semana_3

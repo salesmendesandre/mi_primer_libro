@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mínimos Cuadrados Ordinarios (OLS) - Interactivo</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        :root {
+            --bg-page: #f1f5f9;
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --primary: #2563eb;
+            --primary-light: #eff6ff;
+            --accent: #f97316;
+            --accent-light: #fff7ed;
+            --error: #ef4444;
+            --error-light: #fef2f2;
+            --success: #10b981;
+            --border: #e2e8f0;
+            --radius: 16px;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            line-height: 1.5;
+            padding: 2rem 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 850px) {
+            .container {
+                grid-template-columns: 1.2fr 1fr;
+            }
+            header {
+                grid-column: span 2;
+            }
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+
+        header h1 {
+            font-size: 2.25rem;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: -0.025em;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            padding: 1.75rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1.25rem;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Estilos del Gráfico */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            min-height: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        svg {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+
+        .grid line {
+            stroke: var(--border);
+            stroke-opacity: 0.6;
+            shape-rendering: crispEdges;
+        }
+
+        .axis-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            fill: var(--text-muted);
+        }
+
+        /* Estilos del Panel de Controles */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .metric-box {
+            padding: 1rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .metric-box.sse {
+            background-color: var(--error-light);
+            border-color: #fca5a5;
+        }
+
+        .metric-box.equation {
+            background-color: var(--primary-light);
+            border-color: #bfdbfe;
+            grid-column: span 2;
+            text-align: center;
+        }
+
+        .metric-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+        }
+
+        .metric-value {
+            font-size: 1.75rem;
+            font-weight: 800;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .metric-box.sse .metric-value {
+            color: var(--error);
+        }
+
+        .metric-box.equation .metric-value {
+            color: var(--primary);
+            font-size: 1.5rem;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .control-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .control-label-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .control-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .control-badge {
+            background-color: var(--bg-page);
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            font-family: monospace;
+            border: 1px solid var(--border);
+        }
+
+        /* Estilizar Sliders */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            outline: none;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            transition: transform 0.1s ease;
+        }
+
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        input[type=range]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border: none;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            transition: transform 0.1s ease;
+        }
+
+        input[type=range]::-moz-range-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        /* Botón de Optimización */
+        .btn-optimize {
+            background-color: var(--success);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: auto;
+            box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);
+        }
+
+        .btn-optimize:hover {
+            background-color: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-optimize:active {
+            transform: translateY(0);
+        }
+
+        /* Animación de éxito cuando encuentra el óptimo */
+        @keyframes successPulse {
+            0% { background-color: var(--error-light); border-color: #fca5a5; }
+            50% { background-color: #ecfdf5; border-color: #a7f3d0; }
+            100% { background-color: var(--error-light); border-color: #fca5a5; }
+        }
+
+        .success-flash {
+            animation: successPulse 0.8s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Mínimos Cuadrados Ordinarios (OLS)</h1>
+            <p>Ajusta manualmente los pesos (β₀ y β₁) para intentar minimizar la Suma de Errores al Cuadrado (SSE), o deja que la matemática encuentre el óptimo global.</p>
+        </header>
+
+        <div class="card">
+            <div class="card-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"/></svg>
+                Gráfico de Dispersión y Residuos
+            </div>
+            <div class="chart-container" id="chart">
+                </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                Panel de Control del Modelo
+            </div>
+
+            <div class="metrics-grid">
+                <div class="metric-box equation">
+                    <div class="metric-label">Ecuación Estimada del Modelo</div>
+                    <div class="metric-value" id="eq-value">ŷ = 0.00 + 0.00·x</div>
+                </div>
+                <div class="metric-box sse" id="sse-card" style="grid-column: span 2;">
+                    <div class="metric-label">Suma de Errores al Cuadrado (SSE / Costo)</div>
+                    <div class="metric-value" id="sse-value">0.00</div>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <div class="control-label-wrapper">
+                    <label class="control-label" for="beta0">Intersección / Intercepto (β₀)</label>
+                    <span class="control-badge" id="beta0-val">1.00</span>
+                </div>
+                <input type="range" id="beta0" min="-2" max="8" step="0.05" value="1.5">
+            </div>
+
+            <div class="control-group">
+                <div class="control-label-wrapper">
+                    <label class="control-label" for="beta1">Pendiente / Peso (β₁)</label>
+                    <span class="control-badge" id="beta1-val">0.50</span>
+                </div>
+                <input type="range" id="beta1" min="-0.5" max="2.5" step="0.02" value="0.4">
+            </div>
+
+            <button class="btn-optimize" id="btn-opt">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                Calcular Ajuste Óptimo (OLS)
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // 1. Dataset fijo con tendencia lineal clara + ruido
+        const dataset = [
+            {x: 1.0, y: 2.3}, {x: 2.0, y: 3.5}, {x: 2.8, y: 3.1}, 
+            {x: 3.5, y: 5.2}, {x: 4.2, y: 4.7}, {x: 5.0, y: 6.1}, 
+            {x: 5.5, y: 5.5}, {x: 6.2, y: 7.4}, {x: 7.0, y: 6.8}, 
+            {x: 7.8, y: 8.9}, {x: 8.5, y: 8.1}, {x: 9.2, y: 9.9}, 
+            {x: 10.0, y: 10.4}
+        ];
+
+        // 2. Configuración de dimensiones del gráfico adaptativo
+        const margin = {top: 20, right: 20, bottom: 40, left: 40};
+        const width = 500 - margin.left - margin.right;
+        const height = 400 - margin.top - margin.bottom;
+
+        // Crear elemento SVG básico
+        const svg = d3.select("#chart")
+            .append("svg")
+            .attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
+            .append("g")
+            .attr("transform", `translate(${margin.left},${margin.top})`);
+
+        // 3. Escalas fijas para mantener el entorno estático y fácil de leer
+        const xScale = d3.scaleLinear().domain([0, 11]).range([0, width]);
+        const yScale = d3.scaleLinear().domain([0, 12]).range([height, 0]);
+
+        // 4. Dibujar líneas de cuadrícula y ejes
+        svg.append("g")
+            .attr("class", "grid")
+            .attr("transform", `translate(0,${height})`)
+            .call(d3.axisBottom(xScale).tickSize(-height).tickFormat(""));
+
+        svg.append("g")
+            .attr("class", "grid")
+            .call(d3.axisLeft(yScale).tickSize(-width).tickFormat(""));
+
+        svg.append("g")
+            .attr("transform", `translate(0,${height})`)
+            .call(d3.axisBottom(xScale))
+            .selectAll("text").attr("class", "axis-label");
+
+        svg.append("g")
+            .call(d3.axisLeft(yScale))
+            .selectAll("text").attr("class", "axis-label");
+
+        // Contenedores ordenados para capas de dibujo (Z-index manual en SVG)
+        const residualGroup = svg.append("g").attr("class", "residuals");
+        const lineGroup = svg.append("g").attr("class", "regression-line");
+        const pointsGroup = svg.append("g").attr("class", "data-points");
+
+        // 5. Dibujar los puntos reales (Permanentes en el fondo)
+        pointsGroup.selectAll("circle")
+            .data(dataset)
+            .enter()
+            .append("circle")
+            .attr("cx", d => xScale(d.x))
+            .attr("cy", d => yScale(d.y))
+            .attr("r", 6)
+            .attr("fill", "#1e3a8a")
+            .attr("stroke", "#ffffff")
+            .attr("stroke-width", 1.5)
+            .style("box-shadow", "0 2px 4px rgba(0,0,0,0.2)");
+
+        // Crear la línea de regresión (vacía al inicio, se actualizará)
+        const regressionLine = lineGroup.append("line")
+            .attr("stroke", "#3b82f6")
+            .attr("stroke-width", 3.5)
+            .attr("stroke-linecap", "round");
+
+        // 6. Referencias a elementos del DOM
+        const beta0Slider = document.getElementById("beta0");
+        const beta1Slider = document.getElementById("beta1");
+        const beta0Badge = document.getElementById("beta0-val");
+        const beta1Badge = document.getElementById("beta1-val");
+        const sseDisplay = document.getElementById("sse-value");
+        const eqDisplay = document.getElementById("eq-value");
+        const btnOpt = document.getElementById("btn-opt");
+
+        // 7. Función núcleo: Actualización de la visualización en tiempo real
+        function update(b0, b1) {
+            // Actualizar textos de los controles
+            beta0Badge.textContent = b0.toFixed(2);
+            beta1Badge.textContent = b1.toFixed(2);
+
+            // Actualizar fórmula matemática en pantalla
+            const sign = b1 >= 0 ? "+" : "-";
+            eqDisplay.textContent = `ŷ = ${b0.toFixed(2)} ${sign} ${Math.abs(b1).toFixed(2)}·x`;
+
+            // Calcular puntos extremos de la recta en los límites del gráfico (x=0 e x=11)
+            const x1 = 0, y1 = b0 + b1 * x1;
+            const x2 = 11, y2 = b0 + b1 * x2;
+
+            regressionLine
+                .attr("x1", xScale(x1))
+                .attr("y1", yScale(y1))
+                .attr("x2", xScale(x2))
+                .attr("y2", yScale(y2));
+
+            // Calcular y renderizar residuos + Calcular la suma de errores al cuadrado (SSE)
+            let sse = 0;
+
+            // Enlace de datos para las líneas de residuos
+            const residuals = residualGroup.selectAll("line").data(dataset);
+
+            // Salida de elementos antiguos
+            residuals.exit().remove();
+
+            // Actualización + Entrada de nuevas líneas de residuos
+            residuals.enter()
+                .append("line")
+                .merge(residuals)
+                .attr("x1", d => xScale(d.x))
+                .attr("y1", d => yScale(d.y))
+                .attr("x2", d => xScale(d.x))
+                .attr("y2", d => {
+                    const yPred = b0 + b1 * d.x;
+                    // Acumulamos el error matemático
+                    sse += Math.pow(d.y - yPred, 2);
+                    return yScale(yPred);
+                })
+                .attr("stroke", "#ef4444")
+                .attr("stroke-width", 1.5)
+                .attr("stroke-dasharray", "3,3")
+                .attr("stroke-opacity", 0.7);
+
+            // Mostrar el costo final en la tarjeta
+            sseDisplay.textContent = sse.toFixed(3);
+        }
+
+        // Lectura de inputs del usuario
+        function handleSliderInput() {
+            const b0 = parseFloat(beta0Slider.value);
+            const b1 = parseFloat(beta1Slider.value);
+            update(b0, b1);
+        }
+
+        // Añadir escuchas de eventos a los sliders de control
+        beta0Slider.addEventListener("input", handleSliderInput);
+        beta1Slider.addEventListener("input", handleSliderInput);
+
+        // 8. Algoritmo de Mínimos Cuadrados Ordinarios (OLS Analítico)
+        function calculateAnalyticalOLS() {
+            const n = dataset.length;
+            const meanX = d3.mean(dataset, d => d.x);
+            const meanY = d3.mean(dataset, d => d.y);
+
+            let numerator = 0;
+            let denominator = 0;
+
+            for (let i = 0; i < n; i++) {
+                numerator += (dataset[i].x - meanX) * (dataset[i].y - meanY);
+                denominator += Math.pow(dataset[i].x - meanX, 2);
+            }
+
+            const b1_opt = numerator / denominator;
+            const b0_opt = meanY - b1_opt * meanX;
+
+            return { b0_opt, b1_opt };
+        }
+
+        // 9. Motor de animación fluida para sincronizar Sliders HTML con transiciones de D3
+        function animateToOptimal() {
+            const { b0_opt, b1_opt } = calculateAnalyticalOLS();
+            
+            const duration = 900; // Duración en milisegundos
+            const start_b0 = parseFloat(beta0Slider.value);
+            const start_b1 = parseFloat(beta1Slider.value);
+            const startTime = performance.now();
+
+            function animationStep(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+
+                // Función de suavizado (Easing: easeInOutCubic)
+                const ease = progress < 0.5 
+                    ? 4 * progress * progress * progress 
+                    : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+
+                // Interpolación matemática lineal
+                const current_b0 = start_b0 + (b0_opt - start_b0) * ease;
+                const current_b1 = start_b1 + (b1_opt - start_b1) * ease;
+
+                // Forzar los valores calculados sobre los sliders nativos del DOM
+                beta0Slider.value = current_b0;
+                beta1Slider.value = current_b1;
+
+                // Redibujar la escena entera con los pesos de este fotograma
+                update(current_b0, current_b1);
+
+                if (progress < 1) {
+                    requestAnimationFrame(animationStep);
+                } else {
+                    // Feedback visual al completar: Destello de éxito
+                    const card = document.getElementById("sse-card");
+                    card.classList.add("success-flash");
+                    setTimeout(() => card.classList.remove("success-flash"), 800);
+                }
+            }
+
+            requestAnimationFrame(animationStep);
+        }
+
+        // Asignar el cálculo óptimo al botón verde
+        btnOpt.addEventListener("click", animateToOptimal);
+
+        // Renderizado inicial al cargar la página por primera vez
+        handleSliderInput();
+    </script>
+</body>
+</html>
